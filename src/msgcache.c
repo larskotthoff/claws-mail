@@ -885,8 +885,14 @@ bail_err:
 	}
 }
 
+static void printAll(gpointer key, gpointer value, gpointer foo) {
+    MsgInfo *msginfo = (MsgInfo *) value;
+    printf("%s %s\n", procmsg_msginfo_get_identifier(msginfo), procmsg_msginfo_get_tags_str(msginfo));
+}
+
 void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
 {
+    printf("***file*** %s\n", tags_file);
 	FILE *fp;
 	MsgInfo *msginfo;
 	guint32 num;
@@ -995,6 +1001,8 @@ bail_err:
 	if (error) {
 		debug_print("error reading cache tags from %s\n", tags_file);
 	}
+
+    g_hash_table_foreach(cache->msgnum_table, printAll, NULL);
 }
 
 static int msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
